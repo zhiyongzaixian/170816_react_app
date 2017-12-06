@@ -1,0 +1,10 @@
+.newsContainer {
+  margin-top: 20px;
+}
+.leftContainer1 {
+  width: 400px;
+}
+
+.leftContainer1 img {
+  width: 400px;
+}

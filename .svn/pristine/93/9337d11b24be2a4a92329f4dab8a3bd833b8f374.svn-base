@@ -1,0 +1,68 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import {Link} from 'react-router';
+import {Card } from 'antd';
+
+class NewsImgBlock extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      newsArr: []
+    }
+  }
+  componentWillMount(){
+    // 准备工作
+    let {type, count} = this.props;
+    let url = `http://newsapi.gugujiankong.com/Handler.ashx?action=getnews&type=${type}&count=${count}`;
+    axios.get(url)
+      .then(response => {
+        let data = response.data
+        console.log(data);
+        // 更新状态
+        this.setState({newsArr: data});
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+  render(){
+    let {title, width, imgWidth} = this.props;
+    let {newsArr} = this.state;
+    let newsList = newsArr.length?
+      (
+        newsArr.map((item, index) => {
+          return (
+            <div className="new_img_block" key={index}>
+              <Link to={`/news_detail/${item.uniquekey}`}>
+                <div>
+                  <img style={{width: imgWidth}} src={item.thumbnail_pic_s} alt=""/>
+                </div>
+                <div style={{width: imgWidth}}>
+                  <h3>{item.title}</h3>
+                  <p>{item.author_name}</p>
+                </div>
+              </Link>
+            </div>
+          )
+        })
+      )
+      : '暂时没有新闻推送';
+    return (
+      <Card title={title}>
+        {newsList}
+      </Card>
+    )
+  }
+}
+
+// 规定传入的props数据类型和必要性
+NewsImgBlock.propTypes = {
+  type: PropTypes.string.isRequired,
+  count: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  width: PropTypes.string.isRequired,
+  imgWidth: PropTypes.string.isRequired
+}
+
+export default NewsImgBlock;
