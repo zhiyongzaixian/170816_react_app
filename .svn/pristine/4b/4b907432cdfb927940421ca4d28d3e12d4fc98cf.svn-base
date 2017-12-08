@@ -1,0 +1,46 @@
+import React from 'react';
+import axios from 'axios';
+import {Card} from 'antd';
+
+class NewsComments extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      comments: []
+    }
+  }
+  // 组件将要接收props数据或者接收的props数据发生变化的时候调用的钩子函数
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps);
+    let url = `http://newsapi.gugujiankong.com/Handler.ashx?action=getcomments&uniquekey=${nextProps.newsId}`;
+    axios.get(url)
+      .then(response => {
+        let data = response.data;
+        // 更新状态
+        this.setState({comments: data});
+      })
+  }
+  render() {
+    let {comments} = this.state;
+    let commentsList = comments.length?
+      (
+        comments.map((item, index) => {
+          return (
+            <li key={index}>
+              <Card title={item.UserName} extra={item.datetime}>
+                {item.Comments}
+              </Card>
+            </li>
+          )
+        })
+      )
+      :'暂时没有评论内容'
+    return (
+      <ul>
+        {commentsList}
+      </ul>
+    )
+  }
+}
+
+export default NewsComments;
